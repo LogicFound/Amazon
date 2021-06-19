@@ -1,0 +1,143 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeSet;
+
+public class ItemsInContainer {
+
+    public  List<Integer> numberOfItems(String s, List<Integer> startIndices, List<Integer> endIndices) {
+
+        List<Integer> res = new ArrayList<>();
+        int[] mem = new int[s.length()];
+        int count = 0;
+        for(int i=0; i<s.length(); i++) {
+            if(s.charAt(i) != '|') {
+                count++;
+            } else {
+                mem[i] = count;
+            }
+        }
+
+        for(int i=0; i<startIndices.size(); i++) {
+            int startIndex = startIndices.get(i)-1;
+            int endIndex = endIndices.get(i)-1;
+
+            while (startIndex < endIndex && s.charAt(startIndex) != '|') {
+                startIndex ++;
+            }
+
+            while (startIndex<endIndex && s.charAt(endIndex) != '|') {
+                endIndex --;
+            }
+
+            res.add(mem[endIndex] - mem[startIndex]);
+        }
+
+        return res;
+    }
+
+
+    private List<Integer> numberOfItemsI(String s, List<Integer> startIndices, List<Integer> endIndices) {
+        List<Integer> res = new ArrayList<>();
+        int[] mem = new int[s.length()];
+        List<Integer> pipeLoc = new ArrayList<>();
+        int count = 0;
+        for(int i=0; i<s.length(); i++) {
+            if(s.charAt(i) != '|') {
+                count++;
+            } else {
+                pipeLoc.add(i);
+                mem[i] = count;
+            }
+        }
+
+        for(int i=0; i<startIndices.size(); i++) {
+            int startIndex = startIndices.get(i)-1;
+            int endIndex = endIndices.get(i)-1;
+
+            int getLeft = binarySearchCeiling(startIndex, pipeLoc);
+            int getRight = binarySearchFloor(endIndex, pipeLoc);
+            res.add(mem[getLeft] - mem[getRight]);
+
+        }
+        return res;
+    }
+
+
+
+    private int binarySearchCeiling(int target,  List<Integer>list) {
+        int start = 0;
+        int end = list.size();
+
+
+        while (start<end) {
+            int middle = start + (end-start)/2;
+            if(list.get(middle) == target) {
+                return target;
+            }
+
+            else if(list.get(middle) < target) {
+                start = middle+1;
+            }
+            else {
+                end = middle;
+            }
+        }
+        return list.get(start);
+    }
+
+
+    private int binarySearchFloor(int target,  List<Integer>list) {
+        int start = 0;
+        int end = list.size();
+
+        while (start<end) {
+            int middle = start + (end-start)/2;
+            if(list.get(middle) == target) {
+                return target;
+            }
+
+            else if(list.get(middle) < target) {
+                start = middle+1;
+            }
+            else {
+                end = middle-1;
+            }
+        }
+        return list.get(start-1);
+    }
+
+
+    private List<Integer> numberOfItemsII(String s, List<Integer> startIndices, List<Integer> endIndices) {
+        List<Integer> res = new ArrayList<>();
+        int[] mem = new int[s.length()];
+        TreeSet<Integer> pipeLoc = new TreeSet<>();
+        int count = 0;
+        for(int i=0; i<s.length(); i++) {
+            if(s.charAt(i) != '|') {
+                count++;
+            } else {
+                pipeLoc.add(i);
+                mem[i] = count;
+            }
+        }
+
+        for(int i=0; i<startIndices.size(); i++) {
+            int startIndex = startIndices.get(i)-1;
+            int endIndex = endIndices.get(i)-1;
+
+            int getLeft = pipeLoc.ceiling(startIndex);
+            int getRight = pipeLoc.floor(endIndex);
+            res.add(mem[getLeft] - mem[getRight]);
+
+        }
+        return res;
+    }
+    public static void main(String[] args) {
+        String s = "|**|*|*";
+        Integer[] startIndices = {2};
+        Integer[] endIndices = {5};
+        ItemsInContainer obj = new ItemsInContainer();
+        obj.numberOfItemsII(s, Arrays.asList(startIndices), Arrays.asList(endIndices));
+    }
+}
