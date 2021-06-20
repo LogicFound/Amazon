@@ -1,0 +1,59 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class NumberOfProvinces {
+
+    private int findCircleNum(int[][] isConnected) {
+        int count =0;
+        int[] visited = new int[isConnected.length];
+        for(int i=0; i< isConnected.length; i++) {
+           if(visited[i] == 0) {
+               count++;
+               markConnectedUsingDfs(isConnected, i, visited);
+           }
+
+        }
+        return count;
+    }
+
+
+    private void markConnectedUsingDfs(int[][] isConnected, int i, int[] visited) {
+        // Mark as 0 , so we dont count it again
+        visited[i] = 1;
+
+       for(int j=0 ; j< isConnected.length; j++) {
+           if(visited[j] ==0 && isConnected[i][j] == 1) {
+               markConnectedUsingDfs(isConnected, j, visited);
+           }
+       }
+
+    }
+
+
+    private int bfsSol(int[][] isConnected) {
+        int[] visited = new int[isConnected.length];
+        Queue<Integer> bfsQ = new LinkedList<>();
+        int count = 0;
+        for(int i=0; i<isConnected.length; i++) {
+
+            if(visited[i] == 0) {
+                bfsQ.add(i);
+                while (!bfsQ.isEmpty()) {
+                    int city = bfsQ.remove();
+                    visited[city] = 1;
+                    for(int j=0; j< isConnected.length; j++) {
+                        if(visited[j] == 0 && isConnected[city][j] == 1) {
+                            bfsQ.add(j);
+                        }
+                    }
+                }
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+
+
+}
