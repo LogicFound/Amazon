@@ -1,0 +1,52 @@
+import java.util.*;
+
+public class findAllConcatenatedStrings {
+    public List<String> findAllConcatenatedWordsInADict(String[] words) {
+        List<String> result = new ArrayList<>();
+        Set<String> dict = new HashSet<>();
+        int minLength = Integer.MAX_VALUE;
+        for(String word : words) {
+          dict.add(word);
+          minLength = Math.min(minLength, word.length());
+        }
+        dict.addAll(Arrays.asList(words));
+        for(String word : words) {
+            if(word.length()>=2*minLength) {
+                recursionHelper(word, dict, result, 0,0);
+            }
+
+        }
+        return result;
+    }
+
+    private void recursionHelper(String word, Set<String> dict, List<String> result, int index, int count) {
+        if(index >= word.length()) {
+            if(count >=2) {
+                result.add(word);
+            }
+            return;
+        }
+
+        for(int i=index+1; i<=word.length(); i++) {
+            String subString = word.substring(index,i);
+            if(dict.contains(subString)) {
+                recursionHelper(word,dict,result,i, count+1);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+       String[] words = {"cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"};
+       findAllConcatenatedStrings obj = new findAllConcatenatedStrings();
+       System.out.println(obj.findAllConcatenatedWordsInADict(words));
+    }
+}
+
+
+/*
+Input: words = ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
+Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
+Explanation: "catsdogcats" can be concatenated by "cats", "dog" and "cats";
+"dogcatsdog" can be concatenated by "dog", "cats" and "dog";
+"ratcatdogcat" can be concatenated by "rat", "cat", "dog" and "cat".
+ */
