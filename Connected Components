@@ -1,0 +1,42 @@
+import java.util.*;
+
+public class ConnectedComponents {
+    public int countComponents(int n, int[][] edges) {
+
+        int count = 0;
+
+        Queue<Integer> bfsQ = new LinkedList<>();
+        int[] visited = new int[n];
+
+        Map<Integer, List<Integer>> adjacentMap = new HashMap<>();
+
+        for(int i=0; i<n; i++) {
+            adjacentMap.put(i, new ArrayList<>());
+        }
+
+        for(int[] edge: edges) {
+            adjacentMap.get(edge[0]).add(edge[1]);
+            adjacentMap.get(edge[1]).add(edge[0]);
+        }
+
+        for(int i=0; i<n; i++) {
+            if(visited[i] == 1) {
+                continue;
+            }
+            bfsQ.add(i);
+            while (!bfsQ.isEmpty()) {
+                int comp = bfsQ.remove();
+                visited[comp] = 1;
+                List<Integer> connected = adjacentMap.get(comp);
+                    for(int j=0; j<connected.size(); j++ ) {
+                        int newConnected = connected.get(j);
+                        if(visited[newConnected] == 0) {
+                            bfsQ.add(newConnected);
+                        }
+                    }
+            }
+            count++;
+        }
+        return count;
+    }
+}
